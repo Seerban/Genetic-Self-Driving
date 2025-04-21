@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
 @export var acceleration = 20
-@export var top_speed = 300
-@export var max_turn_degrees = 2
+@export var top_speed = 1000
+@export var max_turn = 2
 @export var front_aero = 0.98
 @export var sideways_aero = 0.95
 
@@ -14,7 +14,12 @@ func accel(reverse = false) -> void:
 func turn(x) -> void:
 	x = clamp(x, -1, 1)
 	#dif velocity.dot( Vector2(1,0).rotated(rotation) ) < 0: x = -x
-	rotation_degrees += x * max_turn_degrees * min(velocity.length() / top_speed, 1)
+	var turn_mult = max_turn
+	if velocity.length() > top_speed / 2:
+			turn_mult *= min( 1 - (velocity.length() / (top_speed * 2)), 1)
+	else: 	turn_mult *= min( velocity.length() / (top_speed / 2), 1)
+	rotation_degrees += x * turn_mult
+	print(turn_mult)
 
 func forces() -> void:
 	var sideways_vel = velocity.dot( Vector2(0, 1).rotated( rotation ) )
