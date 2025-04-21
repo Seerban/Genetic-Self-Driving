@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://c8a1q3fi3x5n5"]
+
+[ext_resource type="Script" uid="uid://138ypmgjv65c" path="res://Scripts/car.gd" id="1_fbcgl"]
+[ext_resource type="Texture2D" uid="uid://cp1fxg0vsrst" path="res://Sprites/car.png" id="1_qi7x4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uoj53"]
+size = Vector2(780, 367)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_k61xc"]
+radius = 87.0
+height = 503.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_06lh1"]
+radius = 87.0
+height = 468.0
+
+[node name="Car" type="CharacterBody2D"]
+scale = Vector2(0.1, 0.1)
+script = ExtResource("1_fbcgl")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_qi7x4")
+
+[node name="CollisionBox" type="CollisionShape2D" parent="."]
+position = Vector2(-10, 1.5)
+shape = SubResource("RectangleShape2D_uoj53")
+
+[node name="BackWheels" type="CollisionShape2D" parent="."]
+position = Vector2(-251, 1.5)
+shape = SubResource("CapsuleShape2D_k61xc")
+
+[node name="FrontWheels" type="CollisionShape2D" parent="."]
+position = Vector2(216, -1.49012e-07)
+shape = SubResource("CapsuleShape2D_06lh1")
