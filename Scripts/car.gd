@@ -3,8 +3,9 @@ extends CharacterBody2D
 @export var acceleration = 20
 @export var top_speed = 1000
 @export var max_turn = 2
+@export var turn_speed_factor = 2 #1 = 0 turning at max speed
 @export var front_aero = 0.98
-@export var sideways_aero = 0.95
+@export var sideways_aero = 0.96
 
 func accel(reverse = false) -> void:
 	var accel_mult = 1
@@ -13,18 +14,27 @@ func accel(reverse = false) -> void:
 
 func turn(x) -> void:
 	x = clamp(x, -1, 1)
-	#dif velocity.dot( Vector2(1,0).rotated(rotation) ) < 0: x = -x
-	var turn_mult = max_turn
-	if velocity.length() > top_speed / 2:
-			turn_mult *= min( 1 - (velocity.length() / (top_speed * 2)), 1)
-	else: 	turn_mult *= min( velocity.length() / (top_speed / 2), 1)
+	var turn_mult = 0
+
+	if velocity.length() > top_speed / 4:
+		var speed_ratio = clamp(velocity.length() / (top_speed * turn_speed_factor), 0, 1)
+		turn_mult = max_turn * (1.0 - speed_ratio)  # Less turn at high speed
+	else:
+		var speed_ratio = clamp(velocity.length() / (top_speed / 4 * turn_speed_factor), 0, 1)
+		turn_mult = clamp( (max_turn - (max_turn * (1.0 - speed_ratio))) * 2, 0, max_turn)  # Less turn at high speed
+		print(turn_mult)
+	
 	rotation_degrees += x * turn_mult
-	print(turn_mult)
+
+	# Smooth velocity turn (adjust 0.5 to control "driftiness")
+	var angle = deg_to_rad(x * turn_mult)
+	var rotated_velocity = velocity.rotated(angle)
+	velocity = velocity.lerp(rotated_velocity, 0.75)
+
 
 func forces() -> void:
 	var sideways_vel = velocity.dot( Vector2(0, 1).rotated( rotation ) )
 	var front_vel = velocity.dot( Vector2(1, 0).rotated( rotation ) )
-	print(sideways_vel)
 	velocity = Vector2( front_vel * front_aero , sideways_vel * sideways_aero ).rotated( rotation )
 
 func _physics_process(delta: float) -> void:

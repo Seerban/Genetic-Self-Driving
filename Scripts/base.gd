@@ -8,6 +8,7 @@ func _ready() -> void:
 	var track = load("res://Nodes/track.tscn").instantiate()
 	add_child(track)
 	add_child(car)
+	car.global_position = track.start_pos * track.scale
 
 func _physics_process(delta: float) -> void:
 	camera.global_position = car.global_position
