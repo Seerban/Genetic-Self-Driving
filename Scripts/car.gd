@@ -1,11 +1,24 @@
 extends CharacterBody2D
 
+var raycasts : Array
+
 @export var acceleration = 20
 @export var top_speed = 1000
 @export var max_turn = 2
 @export var turn_speed_factor = 2 #1 = 0 turning at max speed
 @export var front_aero = 0.98
 @export var sideways_aero = 0.96
+@export var collision_penalty = 0.94
+
+@export var raycast_length = 250
+
+func _ready() -> void:
+	for i in range(-90, 90, 15):
+		var ray = RayCast2D.new()
+		ray.target_position = Vector2(0, raycast_length)
+		ray.rotation_degrees = rotation_degrees + i - 90
+		raycasts.append(ray)
+		add_child(ray)
 
 func accel(reverse = false) -> void:
 	var accel_mult = 1
@@ -22,7 +35,6 @@ func turn(x) -> void:
 	else:
 		var speed_ratio = clamp(velocity.length() / (top_speed / 4 * turn_speed_factor), 0, 1)
 		turn_mult = clamp( (max_turn - (max_turn * (1.0 - speed_ratio))) * 2, 0, max_turn)  # Less turn at high speed
-		print(turn_mult)
 	
 	rotation_degrees += x * turn_mult
 
@@ -30,7 +42,6 @@ func turn(x) -> void:
 	var angle = deg_to_rad(x * turn_mult)
 	var rotated_velocity = velocity.rotated(angle)
 	velocity = velocity.lerp(rotated_velocity, 0.75)
-
 
 func forces() -> void:
 	var sideways_vel = velocity.dot( Vector2(0, 1).rotated( rotation ) )
@@ -45,4 +56,5 @@ func _physics_process(delta: float) -> void:
 	if Input.is_key_pressed(KEY_D): turn = 1
 	if Input.is_key_pressed(KEY_A): turn = -1
 	turn(turn)
-	move_and_slide()
+	if move_and_slide():
+		velocity *= collision_penalty

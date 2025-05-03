@@ -15,20 +15,23 @@ radius = 87.0
 height = 468.0
 
 [node name="Car" type="CharacterBody2D"]
-scale = Vector2(0.1, 0.1)
 script = ExtResource("1_fbcgl")
 
 [node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
 texture = ExtResource("1_qi7x4")
 
 [node name="CollisionBox" type="CollisionShape2D" parent="."]
-position = Vector2(-10, 1.5)
+position = Vector2(-1, 1.19209e-07)
+scale = Vector2(0.1, 0.1)
 shape = SubResource("RectangleShape2D_uoj53")
 
 [node name="BackWheels" type="CollisionShape2D" parent="."]
-position = Vector2(-251, 1.5)
+position = Vector2(-25, 0)
+scale = Vector2(0.1, 0.1)
 shape = SubResource("CapsuleShape2D_k61xc")
 
 [node name="FrontWheels" type="CollisionShape2D" parent="."]
-position = Vector2(216, -1.49012e-07)
+position = Vector2(22, -8.47033e-22)
+scale = Vector2(0.1, 0.1)
 shape = SubResource("CapsuleShape2D_06lh1")
