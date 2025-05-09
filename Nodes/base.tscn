@@ -1,11 +1,55 @@
-[gd_scene load_steps=2 format=3 uid="uid://h8ssn6ytd4hj"]
+[gd_scene load_steps=5 format=3 uid="uid://h8ssn6ytd4hj"]
 
 [ext_resource type="Script" uid="uid://54tqy7358qug" path="res://Scripts/base.gd" id="1_fyxmt"]
+[ext_resource type="PackedScene" uid="uid://cq2rwc5lbfree" path="res://Nodes/track.tscn" id="2_2pays"]
+[ext_resource type="Script" uid="uid://blp2q2wv2i0m5" path="res://Nodes/label.gd" id="3_doy6r"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2pays"]
+font_size = 100
 
 [node name="Base" type="Node2D"]
 script = ExtResource("1_fyxmt")
 
 [node name="Camera" type="Camera2D" parent="."]
+position = Vector2(2500, 2000)
+zoom = Vector2(0.2, 0.2)
 
-[node name="RayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(286, 224)
+[node name="Track" parent="." instance=ExtResource("2_2pays")]
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = 250.0
+offset_right = -100.0
+offset_bottom = 550.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "CHOOSE BEST"
+
+[node name="Button2" type="Button" parent="."]
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = 600.0
+offset_right = -100.0
+offset_bottom = 900.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "CHOOSE BEST"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 1000.0
+offset_top = 500.0
+offset_right = 2538.0
+offset_bottom = 1300.0
+text = "TOTAL CARS:"
+label_settings = SubResource("LabelSettings_2pays")
+script = ExtResource("3_doy6r")
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
