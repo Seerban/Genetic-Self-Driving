@@ -3,7 +3,7 @@ class_name GeneticRayCast2D
 
 var negated : bool
 var genome_size : int
-const coef_scale := 0.005
+const coef_scale := 0.0002
 const distance_scale := 0.005
 var turn_coef = [0, 0 ,0]
 var accel_coef = [0, 0 ,0]

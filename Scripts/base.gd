@@ -1,6 +1,7 @@
 extends Node2D
 
 var timer = 0
+@export var time_per_gen = 15
 
 @onready var cars = []
 @onready var track = $Track
@@ -9,9 +10,9 @@ var timer = 0
 @export var generation = 0
 @export var car_count = 50
 @export var rays = 5 #per side + 1 middle
-@export var bits_accuracy = 11
-@export var ray_len = 800
-@export var mutation_chance = 0.05
+@export var bits_accuracy = 14
+@export var ray_len = 1000
+@export var mutation_chance = 0.01
 
 func _ready() -> void:
 	spawn_cars(car_count)
@@ -19,7 +20,7 @@ func _ready() -> void:
 func spawn_cars(x : int, top_car : String = ''):
 	if not top_car: 
 		top_car = "0".repeat((rays+1) * bits_accuracy * 6)
-		print("No top car, defaulting")
+		print("No top car, defaulting (" + str((rays+1) * bits_accuracy * 6) + " bits)")
 	cars.clear()
 	cars.append( load("res://Nodes/car.tscn").instantiate() ) 
 	cars[0].init_code(rays, ray_len, bits_accuracy, top_car)
@@ -36,13 +37,13 @@ func spawn_cars(x : int, top_car : String = ''):
 func select_best() -> Car:
 	var max_dist = -1
 	var max_index = 0
-	var best_wall = 9999
+	var best_dist = 0
 	for i in range( len(cars) ):
 		if not is_instance_valid(cars[i]): continue
 		if cars[i].tiles_travelled > max_dist:
 			max_dist = cars[i].tiles_travelled
 			max_index = i
-		if cars[i].tiles_travelled == max_dist and cars[i].frames_on_wall < best_wall:
+		if cars[i].tiles_travelled == max_dist and cars[i].distance < best_dist:
 			max_dist = cars[i].tiles_travelled
 			max_index = i
 	return cars[max_index]

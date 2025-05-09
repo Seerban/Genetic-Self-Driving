@@ -6,11 +6,12 @@ class_name Car
 var raycasts : Array[GeneticRayCast2D]
 @export var tiles_travelled : int = 0
 @export var frames_on_wall : int = 0
+@export var distance : float
 var last_tile : Vector2i = Vector2i(0, 0)
 
 @export var acceleration = 20
 @export var top_speed = 1000
-@export var max_turn = 2
+@export var max_turn = 3
 @export var turn_speed_factor = 2 #1 means no turning at max speed
 @export var front_aero = 0.98
 @export var sideways_aero = 0.96
@@ -96,6 +97,7 @@ func _physics_process(delta: float) -> void:
 	#if name == "best": print(turn_factor)
 	turn(turn_factor)
 	accel(accel_factor)
+	distance += velocity.length()
 	if move_and_slide():
 		collision()
 
