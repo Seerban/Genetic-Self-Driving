@@ -18,7 +18,7 @@ var last_tile : Vector2i = Vector2i(0, 0)
 @export var collision_penalty = 0.8
 
 @export var raycast_length = 500
-@export var raycast_count = 5 #per side + 1 middle
+@export var raycast_count = 3 #per side + 1 middle
 
 @onready var track : TileMapLayer
 
@@ -111,4 +111,4 @@ func update_tile() -> void:
 func collision() -> void:
 	velocity *= collision_penalty
 	frames_on_wall += 1
-	acceleration = 0
+	set_physics_process(false)

@@ -9,8 +9,8 @@ var timer = 0
 
 @export var generation = 0
 @export var car_count = 50
-@export var rays = 5 #per side + 1 middle
-@export var bits_accuracy = 14
+@export var rays = 3 #per side + 1 middle
+@export var bits_accuracy = 5
 @export var ray_len = 1000
 @export var mutation_chance = 0.01
 
@@ -72,7 +72,7 @@ func _physics_process(delta: float) -> void:
 		next_gen()
 
 func _on_button_pressed() -> void:
-	mutation_chance = 0.1
+	mutation_chance = 0.01
 	next_gen()
 
 func _on_button_2_pressed() -> void:

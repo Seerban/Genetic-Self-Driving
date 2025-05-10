@@ -3,8 +3,8 @@ class_name GeneticRayCast2D
 
 var negated : bool
 var genome_size : int
-const coef_scale := 0.0002
-const distance_scale := 0.005
+var coef_scale := 0.0002
+var distance_scale := 0.005
 var turn_coef = [0, 0 ,0]
 var accel_coef = [0, 0 ,0]
 
@@ -12,8 +12,9 @@ var accel_coef = [0, 0 ,0]
 
 func bin_to_value(s : String) -> float:
 	var x = 0
-	for i in range(0, genome_size):
-		if s[i] != '0': x += 2 ** (i)
+	for i in range(genome_size):
+		if s[i] != '0':
+			x += 2 ** (genome_size - i - 1)
 	x -= ((2 ** genome_size) - 1) / 2
 	x *= coef_scale
 	return x
@@ -23,6 +24,8 @@ func _to_string() -> String:
 
 #genome size = bits per coefifcient, 6 coefficients in total (3 for turn, 3 for acceleration)
 func _init(gen_size : int = 6, gen : String = '', length : int = 200) -> void:
+	distance_scale = 1 / length
+	coef_scale = 1 / (2 ** genome_size)
 	genome_size = gen_size
 	target_position = Vector2(length, 0)
 	if gen == '': gen = "0".repeat(genome_size * 6)
