@@ -17,6 +17,7 @@ func bin_to_value(s : String) -> float:
 			x += 2 ** (genome_size - i - 1)
 	x -= ((2 ** genome_size) - 1) / 2
 	x *= coef_scale
+	#print(s, " ", x)
 	return x
 
 func _to_string() -> String:
@@ -24,8 +25,8 @@ func _to_string() -> String:
 
 #genome size = bits per coefifcient, 6 coefficients in total (3 for turn, 3 for acceleration)
 func _init(gen_size : int = 6, gen : String = '', length : int = 200) -> void:
-	distance_scale = 1 / length
-	coef_scale = 1 / (2 ** genome_size)
+	distance_scale = 1. / length
+	coef_scale = 2 / (2 ** genome_size)
 	genome_size = gen_size
 	target_position = Vector2(length, 0)
 	if gen == '': gen = "0".repeat(genome_size * 6)
@@ -45,6 +46,7 @@ func get_turn_factor() -> float:
 	if not is_colliding(): x = target_position.length()
 	else: x = global_position.distance_to( get_collision_point() )
 	x *= distance_scale
+	#print(turn_coef)
 	x = turn_coef[0]*x**2 + turn_coef[1]*x + turn_coef[2]
 	#print(x, ' ',turn_coef[0]*x**2, ' ',turn_coef[1]*x**2, ' ',turn_coef[2]*x**2)
 	if negated: x *= -1
