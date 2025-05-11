@@ -75,6 +75,7 @@ func turn(x) -> void:
 func forces() -> void:
 	var sideways_vel = velocity.dot( Vector2(0, 1).rotated( rotation ) )
 	var front_vel = velocity.dot( Vector2(1, 0).rotated( rotation ) )
+	if front_vel < 0: collision()
 	velocity = Vector2( front_vel * front_aero , sideways_vel * sideways_aero ).rotated( rotation )
 
 func _physics_process(delta: float) -> void:
@@ -109,6 +110,6 @@ func update_tile() -> void:
 		if tile_pos == track.start_cell and tiles_travelled < 30 and tiles_travelled > 2: queue_free()
 
 func collision() -> void:
-	velocity *= collision_penalty
+	acceleration = 0
 	frames_on_wall += 1
 	set_physics_process(false)
