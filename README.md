@@ -12,4 +12,6 @@ Plan to add:
 - Improve sprites and ui.
 
 Example:
-<video src="example.mp4" controls width="1280"> </video>
+
+https://github.com/user-attachments/assets/e97e27a8-1fbf-4b5a-bc4b-a9ec7e5e2644
+
