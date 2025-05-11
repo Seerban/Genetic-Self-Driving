@@ -9,4 +9,7 @@ Plan to add:
 
 - Sliders for car characteristics (Front/Side Aero, Accel, Top Speed, Traction, etc).
 - Add acceleration, speed and rotational momentum to turning and acceleration functions to match intelligence of Machine Learning approach.
-- Improve track tileset?
+- Improve sprites and ui.
+
+Example:
+<video src="example.mp4" controls width="1280"> </video>
