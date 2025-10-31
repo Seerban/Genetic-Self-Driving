@@ -1,7 +1,7 @@
 extends Node2D
 
 var timer : float = 0
-@export var time_per_gen := 5
+@export var time_per_gen := 8
 @export var camera_mode := 0
 var best_car : Car # used for camera view
 
@@ -11,14 +11,15 @@ var best_car : Car # used for camera view
 @onready var ui = $UI
 
 @export var generation = 0
-@export var car_count = 25
+@export var car_count = 50
 @export var rays = 7 # per side + 1 middle
 @export var bits_accuracy = 8
 @export var ray_len = 600
-@export var mutation_chance = 0.04
+@export var mutation_chance = 0.1
 
 func _ready() -> void:
 	spawn_cars(car_count)
+	_on_full_view_pressed()
 
 func spawn_cars(x : int, top_car : String = ''):
 	if not top_car or len(top_car) != bits_accuracy * (rays+1) * 6: 
@@ -103,8 +104,8 @@ func _on_bits_slider_value_changed(value: float) -> void:
 	get_node("UI/Sidebar/BitsLabel").text = "Bits per Ray: " + str(int(value))
 
 func _on_full_view_pressed() -> void:
-	camera.zoom = Vector2(0.14, 0.14)
-	camera.position = Vector2(20000, 16000)
+	camera.zoom = Vector2(0.22, 0.22)
+	camera.position = Vector2(2000, 1675)
 	camera_mode = 0
 
 func _on_spec_best_pressed() -> void:
