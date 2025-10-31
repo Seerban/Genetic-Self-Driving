@@ -64,9 +64,16 @@ func mutate(code : String, chance : float) -> String:
 
 func next_gen(car : Car = null) -> void:
 	initializing = true
+	# add time to time board
+	if car: track.add_time(generation, timer)
+	else: track.add_time(generation, -1)
+	
+	# advance generation
 	timer = 0
 	generation += 1
 	get_node("UI/TopUI/GenerationData/Generation").text = "Generation: " + str(generation)
+	
+	#check if there is winner otherwise use furthest driven
 	if car == null:
 		best_car = select_best()
 	else:

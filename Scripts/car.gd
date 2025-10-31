@@ -108,6 +108,6 @@ func _physics_process(delta: float) -> void:
 		velocity = get_last_slide_collision().get_normal() * velocity.length() * 0.3
 		penalty_remaining = 3 # Crashing penalty
 		
-	if track.local_to_map(position/2) == track.end_pos:
+	if track.local_to_map(position/2) == track.end_cell:
 		if not base.initializing:
 			base.next_gen(self)
