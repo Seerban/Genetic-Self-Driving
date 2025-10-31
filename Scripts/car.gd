@@ -3,19 +3,21 @@ class_name Car
 
 # Variables managed by base.gd when spawned
 
-@export var code : String
+@export var code : String # genetic binary code
+@export var distance : float = 0 # distance travelled
+
+var acceleration = 1 # linear acceleration to top_speed
+var brake_factor = 5 # multiplier to backwards acceleration under braking
+var top_speed = 1000
+var max_turn = 3 # turning multiplier
+var turn_speed_factor = 2 # speed negative influence over turning (1 = no turning at maxspeed)
+var front_aero = 0.99 # forward damping
+var side_aero = 0.9 # sideways damping
+
+var penalty_remaining = 0 # penalty to top speed for bad behaviour
+var penalty_factor = 0.15
 
 var raycasts : Array[GeneticRayCast2D]
-@export var distance : float = 0
-
-var acceleration = 1
-var brake_factor = 5
-var top_speed = 1000
-var max_turn = 3
-var turn_speed_factor = 2 # speed negative influence over turning (1 = no turning at maxspeed)
-var front_aero = 0.99
-var sideways_aero = 0.9
-
 @export var raycast_length = 500
 @export var raycast_count = 3 # per side + 1 middle
 
@@ -58,7 +60,11 @@ func accel(x) -> void:
 			x = brake_factor
 		else:
 			x *= 0.333
-	velocity = velocity.move_toward(Vector2(top_speed, 0).rotated(rotation), acceleration * x)
+	
+	if penalty_remaining > 0:
+		velocity = velocity.move_toward(Vector2(top_speed * penalty_factor, 0).rotated(rotation), acceleration * x)
+	else:
+		velocity = velocity.move_toward(Vector2(top_speed, 0).rotated(rotation), acceleration * x)
 
 func turn(x) -> void:
 	x = clamp(x, -1, 1)
@@ -74,7 +80,7 @@ func turn(x) -> void:
 func forces() -> void:
 	var sideways_vel = velocity.dot( Vector2(0, 1).rotated( rotation ) )
 	var front_vel = velocity.dot( Vector2(1, 0).rotated( rotation ) )
-	velocity = Vector2( front_vel * front_aero , sideways_vel * sideways_aero ).rotated( rotation )
+	velocity = Vector2( front_vel * front_aero , sideways_vel * side_aero ).rotated( rotation )
 
 func turn_process() -> void:
 	var turn_factor = 0
@@ -94,10 +100,14 @@ func _physics_process(delta: float) -> void:
 	forces()
 	turn_process()
 	accel_process()
+	
 	distance += velocity.dot( Vector2(1, 0).rotated( rotation ) )
+	penalty_remaining -= delta
+	
 	if move_and_slide():
 		velocity = get_last_slide_collision().get_normal() * velocity.length() * 0.3
-		distance *= 0.5 # Crashing penalty
+		penalty_remaining = 3 # Crashing penalty
+		
 	if track.local_to_map(position/2) == track.end_pos:
 		if not base.initializing:
 			base.next_gen(self)

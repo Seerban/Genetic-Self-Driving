@@ -181,7 +181,7 @@ horizontal_alignment = 1
 [node name="TimeSlider" type="HSlider" parent="UI/Sidebar"]
 layout_mode = 2
 min_value = 3.0
-max_value = 60.0
+max_value = 61.0
 page = 1.0
 value = 8.0
 rounded = true
