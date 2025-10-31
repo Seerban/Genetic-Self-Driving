@@ -13,7 +13,7 @@ var best_car : Car # used for camera view
 @export var generation = 0
 @export var car_count = 50
 @export var rays = 7 # per side + 1 middle
-@export var bits_accuracy = 8
+@export var bits_accuracy = 12
 @export var ray_len = 600
 @export var mutation_chance = 0.1
 
@@ -47,12 +47,8 @@ func select_best() -> Car:
 	var max_index = 0
 	var best_dist = 0
 	for i in range( len(cars) ):
-		if not is_instance_valid(cars[i]): continue
-		if cars[i].tiles_travelled > max_dist:
-			max_dist = cars[i].tiles_travelled
-			max_index = i
-		if cars[i].tiles_travelled == max_dist and cars[i].distance < best_dist:
-			max_dist = cars[i].tiles_travelled
+		if cars[i].distance > max_dist:
+			max_dist = cars[i].distance
 			max_index = i
 	return cars[max_index]
 
@@ -117,6 +113,7 @@ func _on_time_slider_value_changed(value: float) -> void:
 	ui.get_node("Sidebar/TimeLabel").text = "Seconds per Generation: " + str(int(value))
 
 func _on_timer_timeout() -> void:
+	return
 	var exists = false
 	for i in cars:
 		if i.acceleration != 0:

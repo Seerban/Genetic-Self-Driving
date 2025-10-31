@@ -1,24 +1,22 @@
 extends CharacterBody2D
 class_name Car
 
+# Variables managed by base.gd when spawned
+
 @export var code : String
 
 var raycasts : Array[GeneticRayCast2D]
-@export var tiles_travelled : int = 0
-@export var frames_on_wall : int = 0
 @export var distance : float
-var last_tile : Vector2i = Vector2i(0, 0)
 
-@export var acceleration = 20
-@export var top_speed = 1000
-@export var max_turn = 3
-@export var turn_speed_factor = 2 #1 means no turning at max speed
-@export var front_aero = 0.98
-@export var sideways_aero = 0.96
-@export var collision_penalty = 0.8
+var acceleration = 1
+var top_speed = 1500
+var max_turn = 3
+var turn_speed_factor = 2 # speed negative influence over turning (1 = no turning at maxspeed)
+var front_aero = 0.985
+var sideways_aero = 0.95
 
 @export var raycast_length = 500
-@export var raycast_count = 3 #per side + 1 middle
+@export var raycast_count = 3 # per side + 1 middle
 
 @onready var track : TileMapLayer
 
@@ -58,7 +56,7 @@ func turn(x) -> void:
 	x = clamp(x, -1, 1)
 	var turn_mult = 0
 
-	if velocity.length() > top_speed / 4:
+	if velocity.length() > top_speed * 0.1:
 		var speed_ratio = clamp(velocity.length() / (top_speed * turn_speed_factor), 0, 1)
 		turn_mult = max_turn * (1.0 - speed_ratio)  # Less turn at high speed
 	else:
@@ -75,12 +73,10 @@ func turn(x) -> void:
 func forces() -> void:
 	var sideways_vel = velocity.dot( Vector2(0, 1).rotated( rotation ) )
 	var front_vel = velocity.dot( Vector2(1, 0).rotated( rotation ) )
-	if front_vel < 0: collision()
 	velocity = Vector2( front_vel * front_aero , sideways_vel * sideways_aero ).rotated( rotation )
 
 func _physics_process(delta: float) -> void:
 	forces()
-	update_tile()
 	var turn_factor = 0
 	var accel_factor = 0
 	for i in range(0, len(raycasts) / 2):
@@ -98,18 +94,7 @@ func _physics_process(delta: float) -> void:
 	#if name == "best": print(turn_factor)
 	turn(turn_factor)
 	accel(accel_factor)
-	distance += velocity.length()
+	distance += velocity.dot( Vector2(1, 0).rotated( rotation ) )
 	if move_and_slide():
-		collision()
-
-func update_tile() -> void:
-	var tile_pos = track.local_to_map(global_position / track.scale)
-	if tile_pos != last_tile:
-		last_tile = tile_pos
-		tiles_travelled += 1
-		if tile_pos == track.start_cell and tiles_travelled < 30 and tiles_travelled > 2: queue_free()
-
-func collision() -> void:
-	acceleration = 0
-	frames_on_wall += 1
-	set_physics_process(false)
+		velocity = get_last_slide_collision().get_normal() * velocity.length() * 0.3
+		distance *= 0.8
