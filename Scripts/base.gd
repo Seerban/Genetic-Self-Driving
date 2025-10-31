@@ -1,9 +1,11 @@
 extends Node2D
 
+@export var initializing := false
+
 var timer : float = 0
 @export var time_per_gen := 8
 @export var camera_mode := 0
-var best_car : Car # used for camera view
+var best_car : Car
 
 @onready var cars = []
 @onready var track = $Track
@@ -45,7 +47,6 @@ func spawn_cars(x : int, top_car : String = ''):
 func select_best() -> Car:
 	var max_dist = -1
 	var max_index = 0
-	var best_dist = 0
 	for i in range( len(cars) ):
 		if cars[i].distance > max_dist:
 			max_dist = cars[i].distance
@@ -61,23 +62,28 @@ func mutate(code : String, chance : float) -> String:
 		else: new_code.append(i)
 	return ''.join(new_code)
 
-func next_gen() -> void:
+func next_gen(car : Car = null) -> void:
+	initializing = true
+	timer = 0
 	generation += 1
 	get_node("UI/TopUI/GenerationData/Generation").text = "Generation: " + str(generation)
-	best_car = select_best()
+	if car == null:
+		best_car = select_best()
+	else:
+		best_car = car
 	for i in cars:
-		if is_instance_valid(i):
-			i.queue_free()
+		i.queue_free()
 	spawn_cars(car_count, best_car.code)
+	
+	var lambda = (func(): initializing = false)
+	lambda.call_deferred()
 
 func _physics_process(delta: float) -> void:
 	timer += delta
 	if timer > time_per_gen:
-		timer = 0
 		next_gen()
 	if camera_mode == 1:
-		if is_instance_valid(best_car):
-			camera.position = best_car.position
+		camera.position = best_car.position
 
 func _on_mutation_slider_value_changed(value: float) -> void:
 	mutation_chance = value / 100
@@ -111,12 +117,3 @@ func _on_spec_best_pressed() -> void:
 func _on_time_slider_value_changed(value: float) -> void:
 	time_per_gen = value
 	ui.get_node("Sidebar/TimeLabel").text = "Seconds per Generation: " + str(int(value))
-
-func _on_timer_timeout() -> void:
-	return
-	var exists = false
-	for i in cars:
-		if i.acceleration != 0:
-			exists = true
-	if not exists:
-		timer += 60
