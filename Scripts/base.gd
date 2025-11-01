@@ -17,7 +17,7 @@ var best_car : Car
 @export var generation = 0
 @export var car_count = 50
 # car variables
-@export var rays = 7 # per side + 1 middle
+@export var rays = 5 # per side + 1 middle
 @export var bits_accuracy = 12
 @export var ray_len = 600
 @export var mutation_chance = 0.1
@@ -35,14 +35,14 @@ func spawn_cars(x : int, top_car : String = ''):
 		print("No top car, defaulting (" + str((rays+1) * bits_accuracy * 6) + " bits)")
 	cars.clear()
 	cars.append( load("res://Nodes/car.tscn").instantiate() ) 
-	cars[0].init_code(rays, ray_len, bits_accuracy, top_car)
+	cars[0].init_code(rays, bits_accuracy, top_car)
 	cars[0].name = "best"
 	cars[0].modulate = Color.RED
 	cars[0].z_index = 2
 	best_car = cars[0]
 	for i in range(1,x):
 		cars.append( load("res://Nodes/car.tscn").instantiate() )
-		cars[i].init_code( rays, ray_len, bits_accuracy, mutate(top_car, mutation_chance) )
+		cars[i].init_code( rays, bits_accuracy, mutate(top_car, mutation_chance) )
 	for car in cars:
 		add_child(car)
 		car.global_position = Vector2(track.start_pos.x * track.scale.x, track.start_pos.y * track.scale.y)
@@ -102,10 +102,6 @@ func _on_mutation_slider_value_changed(value: float) -> void:
 func _on_rays_slider_value_changed(value: float) -> void:
 	rays = value
 	ui.get_node("Sidebar/RaysLabel").text = "Raycasts: " + str(int(value)) + " per side"
-
-func _on_length_slider_value_changed(value: float) -> void:
-	ray_len = value
-	ui.get_node("Sidebar/LengthLabel").text = "Raycast Length: " + str(int(value))
 
 func _on_car_slider_value_changed(value: float) -> void:
 	car_count = int(value)

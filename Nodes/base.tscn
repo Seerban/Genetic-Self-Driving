@@ -132,30 +132,16 @@ exp_edit = true
 
 [node name="RaysLabel" type="Label" parent="UI/Sidebar"]
 layout_mode = 2
-text = "Raycasts: 7 per side"
+text = "Raycasts: 5 per side"
 label_settings = SubResource("LabelSettings_2pays")
 horizontal_alignment = 1
 
 [node name="RaysSlider" type="HSlider" parent="UI/Sidebar"]
 layout_mode = 2
-min_value = 3.0
+min_value = 5.0
 max_value = 19.0
 step = 2.0
 value = 7.0
-rounded = true
-
-[node name="LengthLabel" type="Label" parent="UI/Sidebar"]
-layout_mode = 2
-text = "Raycast Length: 600"
-label_settings = SubResource("LabelSettings_2pays")
-horizontal_alignment = 1
-
-[node name="LengthSlider" type="HSlider" parent="UI/Sidebar"]
-layout_mode = 2
-min_value = 150.0
-max_value = 1000.0
-step = 50.0
-value = 600.0
 rounded = true
 
 [node name="BitsLabel" type="Label" parent="UI/Sidebar"]
@@ -191,6 +177,5 @@ rounded = true
 [connection signal="value_changed" from="UI/Sidebar/CarSlider" to="." method="_on_car_slider_value_changed"]
 [connection signal="value_changed" from="UI/Sidebar/MutationSlider" to="." method="_on_mutation_slider_value_changed"]
 [connection signal="value_changed" from="UI/Sidebar/RaysSlider" to="." method="_on_rays_slider_value_changed"]
-[connection signal="value_changed" from="UI/Sidebar/LengthSlider" to="." method="_on_length_slider_value_changed"]
 [connection signal="value_changed" from="UI/Sidebar/BitsSlider" to="." method="_on_bits_slider_value_changed"]
 [connection signal="value_changed" from="UI/Sidebar/TimeSlider" to="." method="_on_time_slider_value_changed"]

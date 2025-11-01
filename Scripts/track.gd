@@ -19,5 +19,5 @@ func _ready() -> void:
 
 # -1 time for DNF
 func add_time(gen, time):
-	print("Addingg time", gen, ' ', time)
+	#print("Addingg time", gen, ' ', time)
 	timer.add_time(gen, time)
