@@ -5,14 +5,16 @@ class_name Car
 
 @export var code : String # genetic binary code
 @export var distance : float = 0 # distance travelled
+var visited_tiles : Array[Vector2i]
+var last_tile := Vector2i.ZERO
 
 var acceleration = 1 # linear acceleration to top_speed
 var brake_factor = 5 # multiplier to backwards acceleration under braking
 var top_speed = 1000
 var max_turn = 3 # turning multiplier
 var turn_speed_factor = 2 # speed negative influence over turning (1 = no turning at maxspeed)
-var front_aero = 0.99 # forward damping
-var side_aero = 0.9 # sideways damping
+var front_aero = 1 # forward damping
+var side_aero = 1 # sideways damping
 
 var penalty_remaining = 0 # penalty to top speed for bad behaviour
 var penalty_factor = 0.15
@@ -96,11 +98,21 @@ func accel_process() -> void:
 		accel_factor += i.get_accel_factor()
 	accel(accel_factor)
 
+func get_tile_pos() -> Vector2i:
+	return track.local_to_map(position/2)
+
+func disable():
+	acceleration = 0
+	max_turn = 0
+	velocity = Vector2.ZERO
+	distance = 0
+
 func _physics_process(delta: float) -> void:
 	forces()
 	turn_process()
 	accel_process()
 	
+	# Add distance travelled
 	distance += velocity.dot( Vector2(1, 0).rotated( rotation ) )
 	penalty_remaining -= delta
 	
@@ -108,6 +120,14 @@ func _physics_process(delta: float) -> void:
 		velocity = get_last_slide_collision().get_normal() * velocity.length() * 0.3
 		penalty_remaining = 3 # Crashing penalty
 		
-	if track.local_to_map(position/2) == track.end_cell:
+	# Check for finish line
+	if get_tile_pos() == track.end_cell:
 		if not base.initializing:
 			base.next_gen(self)
+	
+	# Check for backtracking
+	if get_tile_pos() != last_tile:
+		last_tile = get_tile_pos()
+		if last_tile in visited_tiles:
+			disable()
+		visited_tiles.append(last_tile)

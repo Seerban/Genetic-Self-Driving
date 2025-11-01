@@ -7,13 +7,16 @@ var timer : float = 0
 @export var camera_mode := 0
 var best_car : Car
 
+
 @onready var cars = []
 @onready var track = $Track
 @onready var camera = $Camera
 @onready var ui = $UI
 
+# generation variables
 @export var generation = 0
 @export var car_count = 50
+# car variables
 @export var rays = 7 # per side + 1 middle
 @export var bits_accuracy = 12
 @export var ray_len = 600
